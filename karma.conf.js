@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/udm-sg-pwd'),
+      dir: require('path').join(__dirname, './coverage/ng-practice'),
       subdir: '.',
       reporters: [
         { type: 'html' },
