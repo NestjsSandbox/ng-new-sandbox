@@ -1,6 +1,6 @@
 # udm-sg password-generator
 
-This project is from Udemy Course Stephen Grider
+This project is from Udemy Course Stephen Grider Section 2 Video-9
 The app auto generates a random password given prefrences.
 
 The prefrences are given by user by clicking on radio button options.
