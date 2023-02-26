@@ -1,0 +1,16 @@
+<div class="card">
+  <div class="card-image">
+    <figure class="image is-4by3">
+      <img [src]="cardImageUrl" alt="top-of-card" />
+    </figure>
+  </div>
+
+  <div class="card-content">
+    <div class="media-content">
+      <p class="title is-4">{{ cardTitle }}</p>
+      <p class="subtitle is-6">@{{ cardUsername }}</p>
+    </div>
+
+    <div class="content">{{ cardContent }}</div>
+  </div>
+</div>
