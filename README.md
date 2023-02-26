@@ -1,27 +1,13 @@
-# UdmSgPwd
+# App : Udemy-Stephen-Grider-Typing-Game Tutorial
+  The link to the tutorial is:
+     https://www.udemy.com/course/the-modern-angular-bootcamp/learn/lecture/17566950#reviews
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.5.
+  Tutorial is on Section 4 Videos 44-53
 
-## Development server
+  This app is located on branch 'udm-sg-typing-game'
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+  What the app does is display a text string, then the user types the string, if they typed correctly then string is green, else on every wrong char the cahr is colored red
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+  What the tutorial teaches is :
+    (1) Passing data from parent to child
+    (2) Using structural directive
