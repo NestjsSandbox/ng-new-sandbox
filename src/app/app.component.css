@@ -1,0 +1,10 @@
+.black {
+  color: gray;
+}
+.green {
+  color: green;
+}
+.red {
+  color: red;
+  font-weight: bold;
+}

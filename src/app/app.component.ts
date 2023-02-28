@@ -1,3 +1,4 @@
+import { getLocaleDateTimeFormat } from '@angular/common';
 import { Component } from '@angular/core';
 import { faker } from '@faker-js/faker';
 
@@ -10,13 +11,15 @@ export class AppComponent {
   randomText = faker.lorem.sentence().trim().substring(0, 5);
   enteredText = '';
 
-
-
-
   onInput(event: Event) {
     const target = event.target as HTMLInputElement;
     this.enteredText = target.value;
     console.log('result = ' + this.enteredText);
+  }
 
+  compare(letterA: string, letterB: string): string {
+    if (!letterB) return 'black';
+
+    return letterA === letterB ? 'green': 'red';
   }
 }
