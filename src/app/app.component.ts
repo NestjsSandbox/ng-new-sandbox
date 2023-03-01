@@ -9,6 +9,7 @@ export class AppComponent {
  name:string = '';
  myDate: string = '';
  amount: number = 0;
+ miles: number = 0;
 
 
   onNameChange(event: Event) {
@@ -24,6 +25,11 @@ export class AppComponent {
   onAmountChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.amount = parseInt(target.value);
+  }
+
+  onMilesChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.miles = parseFloat(target.value);
   }
 
 }
