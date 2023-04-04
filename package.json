@@ -50,7 +50,8 @@
       "<rootDir>/setup-jest.ts"
     ],
     "transform": {
-      "^.+\\.(ts|js|html)$": "jest-preset-angular"
+      "^.+\\.(ts|js|html)$": "jest-preset-angular",
+      "^.+\\.js$'": "babel-jest"
     },
     "testMatch": [
       "**/?(*.)+(jest).ts"
