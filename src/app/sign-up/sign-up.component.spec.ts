@@ -86,14 +86,52 @@ describe('SignUpComponent', () => {
       const button = signUp.querySelector('button');
       expect(button).toBeTruthy();
       expect(button?.textContent).toBe('Sign Up');
-    } );
+    });
 
     //Create a test for 'it disables the Sign Up button initially'
     it('disables the Sign Up button initially', () => {
       const signUp = fixture.nativeElement as HTMLElement;
       const button = signUp.querySelector('button');
       expect(button?.disabled).toBeTruthy();
-    } );  
-
+    });
   }); //end of Layout describe
+
+  describe('Interactions', () => {
+    it('enables the Sign Up button when password and password-confirm have same value', () => {
+      const signUp = fixture.nativeElement as HTMLElement;
+      const password = signUp.querySelector(
+        'input[id="password"]'
+      ) as HTMLInputElement;
+
+      const confirmPassword = signUp.querySelector(
+        'input[id="confirmPassword"]'
+      ) as HTMLInputElement;
+
+      password.value = '123456789';
+      password.dispatchEvent(new Event('input'));
+
+      confirmPassword.value = '123456789';
+      confirmPassword.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+
+      const button = signUp.querySelector('button');
+      expect(button?.disabled).toBeFalsy();
+    }); //end it enables Sign Up button when password === confmirmpPassword
+
+    describe('Enabling the Sign Up button when Username not empty', () => {
+      const signUp = fixture.nativeElement as HTMLElement;
+      const username = signUp.querySelector(
+        'input[id="username"]'
+      ) as HTMLInputElement;
+
+      username.value = 'test-username';
+      username.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+
+      const button = signUp.querySelector('button');
+      expect(button?.disabled).toBeFalsy();
+    });
+  }); //end of Interactions describe
 });
