@@ -119,19 +119,54 @@ describe('SignUpComponent', () => {
       expect(button?.disabled).toBeFalsy();
     }); //end it enables Sign Up button when password === confmirmpPassword
 
-    describe('Enabling the Sign Up button when Username not empty', () => {
+    it('sends usernam, email & password to backen when calling API', () => {
+      const spy = spyOn(window, 'fetch');
+
       const signUp = fixture.nativeElement as HTMLElement;
       const username = signUp.querySelector(
         'input[id="username"]'
       ) as HTMLInputElement;
-
       username.value = 'test-username';
       username.dispatchEvent(new Event('input'));
+
+      const email = signUp.querySelector(
+        'input[id="email"]'
+      ) as HTMLInputElement;
+      email.value = 'test@email.com';
+      email.dispatchEvent(new Event('input'));
+
+      const password = signUp.querySelector(
+        'input[id="password"]'
+      ) as HTMLInputElement;
+      password.value = '1234';
+      password.dispatchEvent(new Event('input'));
+
+      const confirmPassword = signUp.querySelector(
+        'input[id="confirmPassword"]'
+      ) as HTMLInputElement;
+      confirmPassword.value = '1234';
+      confirmPassword.dispatchEvent(new Event('input'));
 
       fixture.detectChanges();
 
       const button = signUp.querySelector('button');
-      expect(button?.disabled).toBeFalsy();
-    });
+      button?.click();
+
+      const args = spy.calls.allArgs()[0];
+      const secondParam = args[1] as RequestInit;
+      expect(secondParam.body).toEqual(
+        //body is a string
+        JSON.stringify(
+          //JSON.stringify converts an object to a string
+          {
+            username: 'test-username',
+            password: '1234',
+            email: 'test@email.com',
+          }
+        )
+      );
+
+      //expect(button?.disabled).toBeFalsy();
+    }); //end of it sends username, email & password to backend when calling API
   }); //end of Interactions describe
-});
+}); //end describe('SignUpComponent'
