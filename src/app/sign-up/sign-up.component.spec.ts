@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SignUpComponent } from './sign-up.component';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 
 describe('SignUpComponent', () => {
   let component: SignUpComponent;
@@ -8,6 +12,7 @@ describe('SignUpComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SignUpComponent],
+      imports: [HttpClientTestingModule],
     }).compileComponents();
   });
 
@@ -120,7 +125,8 @@ describe('SignUpComponent', () => {
     }); //end it enables Sign Up button when password === confmirmpPassword
 
     it('sends usernam, email & password to backen when calling API', () => {
-      const spy = spyOn(window, 'fetch');
+      //const spy = spyOn(window, 'fetch');
+      let httpTestingController = TestBed.inject(HttpTestingController);
 
       const signUp = fixture.nativeElement as HTMLElement;
       const username = signUp.querySelector(
@@ -151,22 +157,14 @@ describe('SignUpComponent', () => {
 
       const button = signUp.querySelector('button');
       button?.click();
+      const req = httpTestingController.expectOne('/api/1.0/users');
+      const reqBody = req.request.body;
 
-      const args = spy.calls.allArgs()[0];
-      const secondParam = args[1] as RequestInit;
-      expect(secondParam.body).toEqual(
-        //body is a string
-        JSON.stringify(
-          //JSON.stringify converts an object to a string
-          {
-            username: 'test-username',
-            password: '1234',
-            email: 'test@email.com',
-          }
-        )
-      );
-
-      //expect(button?.disabled).toBeFalsy();
+      expect(reqBody).toEqual({
+        username: 'test-username',
+        password: '1234',
+        email: 'test@email.com',
+      });
     }); //end of it sends username, email & password to backend when calling API
   }); //end of Interactions describe
 }); //end describe('SignUpComponent'
