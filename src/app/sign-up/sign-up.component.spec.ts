@@ -103,7 +103,7 @@ describe('SignUpComponent', () => {
 
   describe('Interactions', () => {
     let httpTestingController: HttpTestingController;
-    let button: HTMLButtonElement | null;
+    let button: any; //HTMLButtonElement | null;
     let signUp: HTMLElement;
 
     const setupForm = () => {
@@ -144,7 +144,7 @@ describe('SignUpComponent', () => {
       expect(button?.disabled).toBeFalsy();
     }); //end it enables Sign Up button when password === confmirmpPassword
 
-    it('sends usernam, email & password to backen when calling API', () => {
+    it('sends username, email & password to backend when calling API', () => {
       setupForm();
       button?.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
@@ -182,17 +182,29 @@ describe('SignUpComponent', () => {
       expect(signUp.querySelector('span[role="status"]')).toBeTruthy();
     }); //end of it displays spinner when there is an ongoing api call
 
-    // it('displays account activation message after successful sign up', () => {
-    //   setupForm();
-    //   expect(signUp.querySelector('.alert-success')).toBeFalsy();
-    //   button?.click();
-    //   const req = httpTestingController.expectOne('/api/1.0/users');
-    //   req.flush({}); // returnS a 200 OK response
-    //   fixture.detectChanges();
-    //   const message = signUp.querySelector('.alert-success');
-    //   expect(message?.textContent).toContain(
-    //     'Account activation link has been sent to your email'
-    //   );
-    // });
+    it('displays account activation message after successful sign up', () => {
+      setupForm();
+      expect(signUp.querySelector('.alert-success')).toBeFalsy();
+      button?.click();
+      const req = httpTestingController.expectOne('/api/1.0/users');
+      req.flush({}); // returnS a 200 OK response
+      fixture.detectChanges();
+      const message = signUp.querySelector('.alert-success');
+      expect(message?.textContent).toContain(
+        'Account activation link has been sent to your email'
+      );
+    });//end of it displays account activation message after successful sign up
+
+    it('hides sign up form after successful sign up', () => {
+      setupForm();
+      expect(signUp.querySelector('div[data-testid="form-sign-up"]')).toBeTruthy();
+      button?.click();
+      const req = httpTestingController.expectOne('/api/1.0/users');
+      req.flush({}); // returns a 200 OK response
+      fixture.detectChanges();
+      expect(signUp.querySelector('div[data-testid="form-sign-up"]')).toBeFalsy();
+    });
+
+
   }); //end of Interactions describe
 }); //end describe('SignUpComponent'

@@ -15,6 +15,7 @@ export class SignUpComponent {
   password = '';
   confirmPassword = '';
   apiProgress = false;
+  signUpSuccess = false;
 
   onChangeUsername(event: Event) {
     this.username = (event.target as HTMLInputElement).value;
@@ -42,6 +43,8 @@ export class SignUpComponent {
         password: this.password,
         email: this.email,
       })
-      .subscribe(() => {});
+      .subscribe(() => {
+        this.signUpSuccess = true;
+      });
   }
 }
