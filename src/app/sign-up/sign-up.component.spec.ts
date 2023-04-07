@@ -90,7 +90,7 @@ describe('SignUpComponent', () => {
       const signUp = fixture.nativeElement as HTMLElement;
       const button = signUp.querySelector('button');
       expect(button).toBeTruthy();
-      expect(button?.textContent).toBe('Sign Up');
+      expect(button?.textContent).toContain('Sign Up');
     });
 
     //Create a test for 'it disables the Sign Up button initially'
@@ -102,33 +102,14 @@ describe('SignUpComponent', () => {
   }); //end of Layout describe
 
   describe('Interactions', () => {
-    it('enables the Sign Up button when password and password-confirm have same value', () => {
-      const signUp = fixture.nativeElement as HTMLElement;
-      const password = signUp.querySelector(
-        'input[id="password"]'
-      ) as HTMLInputElement;
+    let httpTestingController: HttpTestingController;
+    let button: HTMLButtonElement | null;
+    let signUp: HTMLElement;
 
-      const confirmPassword = signUp.querySelector(
-        'input[id="confirmPassword"]'
-      ) as HTMLInputElement;
+    const setupForm = () => {
+      httpTestingController = TestBed.inject(HttpTestingController);
 
-      password.value = '123456789';
-      password.dispatchEvent(new Event('input'));
-
-      confirmPassword.value = '123456789';
-      confirmPassword.dispatchEvent(new Event('input'));
-
-      fixture.detectChanges();
-
-      const button = signUp.querySelector('button');
-      expect(button?.disabled).toBeFalsy();
-    }); //end it enables Sign Up button when password === confmirmpPassword
-
-    it('sends usernam, email & password to backen when calling API', () => {
-      //const spy = spyOn(window, 'fetch');
-      let httpTestingController = TestBed.inject(HttpTestingController);
-
-      const signUp = fixture.nativeElement as HTMLElement;
+      signUp = fixture.nativeElement as HTMLElement;
       const username = signUp.querySelector(
         'input[id="username"]'
       ) as HTMLInputElement;
@@ -155,7 +136,16 @@ describe('SignUpComponent', () => {
 
       fixture.detectChanges();
 
-      const button = signUp.querySelector('button');
+      button = signUp.querySelector('button');
+    };
+
+    it('enables the Sign Up button when password and password-confirm have same value', () => {
+      setupForm();
+      expect(button?.disabled).toBeFalsy();
+    }); //end it enables Sign Up button when password === confmirmpPassword
+
+    it('sends usernam, email & password to backen when calling API', () => {
+      setupForm();
       button?.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
       const reqBody = req.request.body;
@@ -166,5 +156,43 @@ describe('SignUpComponent', () => {
         email: 'test@email.com',
       });
     }); //end of it sends username, email & password to backend when calling API
+
+    /**
+     * In the following test, the button is clicked twice to simulate a scenario
+     * where the user clicks on the button to submit the form, and during the API call,
+     * they mistakenly click on the button again.
+     * This can happen due to slow internet connectivity.
+     * To prevent such situations, it's a good practice to disable the submit button
+     * while the API call is in progress.
+     */
+    it('disables the Sign Up button when there is an ongoing api call', () => {
+      setupForm();
+      button?.click(); //This will accept the form and make the call
+      fixture.detectChanges(); //This makes sure the UI is updated to reflect the change caused by the click
+      button?.click(); //This will try to click the button again, but it should be disabled
+      httpTestingController.expectOne('/api/1.0/users'); //Now we make the call
+      expect(button?.disabled).toBeTruthy();
+    }); //end of it disables the Sign Up button when there is an ongoing api call
+
+    it('displays spinner after click on submit', () => {
+      setupForm();
+      expect(signUp.querySelector('span[role="status"]')).toBeFalsy();
+      button?.click();
+      fixture.detectChanges();
+      expect(signUp.querySelector('span[role="status"]')).toBeTruthy();
+    }); //end of it displays spinner when there is an ongoing api call
+
+    // it('displays account activation message after successful sign up', () => {
+    //   setupForm();
+    //   expect(signUp.querySelector('.alert-success')).toBeFalsy();
+    //   button?.click();
+    //   const req = httpTestingController.expectOne('/api/1.0/users');
+    //   req.flush({}); // returnS a 200 OK response
+    //   fixture.detectChanges();
+    //   const message = signUp.querySelector('.alert-success');
+    //   expect(message?.textContent).toContain(
+    //     'Account activation link has been sent to your email'
+    //   );
+    // });
   }); //end of Interactions describe
 }); //end describe('SignUpComponent'
