@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { UserService } from '../core/user.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -8,7 +9,7 @@ import { Component, inject } from '@angular/core';
 })
 export class SignUpComponent {
   //constructor(http: HttpClient) {}
-  private httpClient = inject(HttpClient);
+  private userService = inject(UserService);
 
   username = '';
   email = '';
@@ -37,8 +38,8 @@ export class SignUpComponent {
 
   onClickSignUp() {
     this.apiProgress = true;
-    this.httpClient
-      .post('/api/1.0/users', {
+    this.userService
+      .signup({
         username: this.username,
         password: this.password,
         email: this.email,
