@@ -8,7 +8,10 @@
       <h1>Sign Up</h1>
     </div>
     <div class="card-body">
-      <form>
+      <form
+        class="card-body"
+        (submit)="onClickSignUp(); $event.preventDefault()"
+      >
         <div class="form-group mb-4">
           <label for="username">Username</label>
           <input
@@ -48,26 +51,15 @@
 
         <!-- wrap the button with div and center-->
         <div class="text-center">
-          <button
-            class="btn btn-primary"
-            [disabled]="isDisabled() || apiProgress"
-            (click)="onClickSignup()"
-          >
-            <span
-              *ngIf="apiProgress"
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Sign Up
-          </button>
+          <app-button
+            [myDisabled]="isDisabled()"
+            [apiProgress]="apiProgress"
+          >Sign Up</app-button>
         </div>
       </form>
     </div>
   </div>
 </div>
 <ng-template #successMessage>
-  <div class="alert alert-success">
-    Account activation link has been sent to your email
-  </div>
+  <app-alert>Account activation link has been sent to your email</app-alert>
 </ng-template>

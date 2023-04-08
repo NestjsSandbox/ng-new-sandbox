@@ -4,6 +4,8 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
+import { AlertComponent } from '../shared/alert/alert.component';
+import { ButtonComponent } from '../shared/button/button.component';
 
 describe('SignUpComponent', () => {
   let component: SignUpComponent;
@@ -11,7 +13,7 @@ describe('SignUpComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SignUpComponent],
+      declarations: [SignUpComponent, AlertComponent, ButtonComponent],
       imports: [HttpClientTestingModule],
     }).compileComponents();
   });
@@ -110,6 +112,7 @@ describe('SignUpComponent', () => {
       httpTestingController = TestBed.inject(HttpTestingController);
 
       signUp = fixture.nativeElement as HTMLElement;
+
       const username = signUp.querySelector(
         'input[id="username"]'
       ) as HTMLInputElement;
@@ -193,18 +196,20 @@ describe('SignUpComponent', () => {
       expect(message?.textContent).toContain(
         'Account activation link has been sent to your email'
       );
-    });//end of it displays account activation message after successful sign up
+    }); //end of it displays account activation message after successful sign up
 
     it('hides sign up form after successful sign up', () => {
       setupForm();
-      expect(signUp.querySelector('div[data-testid="form-sign-up"]')).toBeTruthy();
+      expect(
+        signUp.querySelector('div[data-testid="form-sign-up"]')
+      ).toBeTruthy();
       button?.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
       req.flush({}); // returns a 200 OK response
       fixture.detectChanges();
-      expect(signUp.querySelector('div[data-testid="form-sign-up"]')).toBeFalsy();
+      expect(
+        signUp.querySelector('div[data-testid="form-sign-up"]')
+      ).toBeFalsy();
     });
-
-
   }); //end of Interactions describe
 }); //end describe('SignUpComponent'

@@ -35,7 +35,7 @@ export class SignUpComponent {
     return this.password ? this.password !== this.confirmPassword : true;
   }
 
-  onClickSignup() {
+  onClickSignUp() {
     this.apiProgress = true;
     this.httpClient
       .post('/api/1.0/users', {
