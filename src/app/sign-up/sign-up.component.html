@@ -15,46 +15,47 @@
         <div class="form-group mb-4">
           <label for="username">Username</label>
           <input
+            name="username"
             id="username"
             type="text"
             class="form-control"
-            (input)="onChangeUsername($event)"
+            [(ngModel)]="username"
           />
         </div>
         <div class="form-group mb-4">
           <label for="email">Email</label>
           <input
+            name="email"
             id="email"
             type="text"
             class="form-control"
-            (input)="onChangeEmail($event)"
+            [(ngModel)]="email"
           />
         </div>
         <div class="form-group mb-4">
           <label for="password">Password</label>
           <input
+            name="password"
             id="password"
             type="password"
             class="form-control"
-            (input)="onChangePassword($event)"
+            [(ngModel)]="password"
           />
         </div>
         <div class="form-group mb-4">
           <label for="confirmPassword">Confirm Password</label>
-          <input
-            id="confirmPassword"
-            type="password"
-            class="form-control"
-            (input)="onChangeConfirmPassword($event)"
+          <input 
+          name="confirmPassword"
+          id="confirmPassword" type="password" class="form-control" 
+          [(ngModel)]="confirmPassword"
           />
         </div>
 
         <!-- wrap the button with div and center-->
         <div class="text-center">
-          <app-button
-            [myDisabled]="isDisabled()"
-            [apiProgress]="apiProgress"
-          >Sign Up</app-button>
+          <app-button [myDisabled]="isDisabled()" [apiProgress]="apiProgress"
+            >Sign Up</app-button
+          >
         </div>
       </form>
     </div>

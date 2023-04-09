@@ -18,19 +18,7 @@ export class SignUpComponent {
   apiProgress = false;
   signUpSuccess = false;
 
-  onChangeUsername(event: Event) {
-    this.username = (event.target as HTMLInputElement).value;
-  }
-  onChangeEmail(event: Event) {
-    this.email = (event.target as HTMLInputElement).value;
-  }
-  onChangePassword(event: Event) {
-    this.password = (event.target as HTMLInputElement).value;
-  }
 
-  onChangeConfirmPassword(event: Event) {
-    this.confirmPassword = (event.target as HTMLInputElement).value;
-  }
 
   isDisabled() {
     return this.password ? this.password !== this.confirmPassword : true;

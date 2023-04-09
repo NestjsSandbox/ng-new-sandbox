@@ -5,6 +5,7 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { SharedModule } from '../shared/shared.module';
+import { FormsModule } from '@angular/forms';
 
 describe('SignUpComponent', () => {
   let component: SignUpComponent;
@@ -13,7 +14,7 @@ describe('SignUpComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SignUpComponent],
-      imports: [HttpClientTestingModule, SharedModule],
+      imports: [HttpClientTestingModule, SharedModule, FormsModule],
     }).compileComponents();
   });
 
@@ -107,10 +108,11 @@ describe('SignUpComponent', () => {
     let button: any; //HTMLButtonElement | null;
     let signUp: HTMLElement;
 
-    const setupForm = () => {
+    const setupForm = async () => {
       httpTestingController = TestBed.inject(HttpTestingController);
 
       signUp = fixture.nativeElement as HTMLElement;
+      await fixture.whenStable();
 
       const username = signUp.querySelector(
         'input[id="username"]'
@@ -141,13 +143,13 @@ describe('SignUpComponent', () => {
       button = signUp.querySelector('button');
     };
 
-    it('enables the Sign Up button when password and password-confirm have same value', () => {
-      setupForm();
+    it('enables the Sign Up button when password and password-confirm have same value', async () => {
+      await setupForm();
       expect(button?.disabled).toBeFalsy();
     }); //end it enables Sign Up button when password === confmirmpPassword
 
-    it('sends username, email & password to backend when calling API', () => {
-      setupForm();
+    it('sends username, email & password to backend when calling API', async () => {
+      await setupForm();
       button?.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
       const reqBody = req.request.body;
@@ -167,8 +169,8 @@ describe('SignUpComponent', () => {
      * To prevent such situations, it's a good practice to disable the submit button
      * while the API call is in progress.
      */
-    it('disables the Sign Up button when there is an ongoing api call', () => {
-      setupForm();
+    it('disables the Sign Up button when there is an ongoing api call', async () => {
+      await setupForm();
       button?.click(); //This will accept the form and make the call
       fixture.detectChanges(); //This makes sure the UI is updated to reflect the change caused by the click
       button?.click(); //This will try to click the button again, but it should be disabled
@@ -176,16 +178,16 @@ describe('SignUpComponent', () => {
       expect(button?.disabled).toBeTruthy();
     }); //end of it disables the Sign Up button when there is an ongoing api call
 
-    it('displays spinner after click on submit', () => {
-      setupForm();
+    it('displays spinner after click on submit', async () => {
+      await setupForm();
       expect(signUp.querySelector('span[role="status"]')).toBeFalsy();
       button?.click();
       fixture.detectChanges();
       expect(signUp.querySelector('span[role="status"]')).toBeTruthy();
     }); //end of it displays spinner when there is an ongoing api call
 
-    it('displays account activation message after successful sign up', () => {
-      setupForm();
+    it('displays account activation message after successful sign up', async () => {
+      await setupForm();
       expect(signUp.querySelector('.alert-success')).toBeFalsy();
       button?.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
@@ -197,8 +199,8 @@ describe('SignUpComponent', () => {
       );
     }); //end of it displays account activation message after successful sign up
 
-    it('hides sign up form after successful sign up', () => {
-      setupForm();
+    it('hides sign up form after successful sign up', async () => {
+      await setupForm();
       expect(
         signUp.querySelector('div[data-testid="form-sign-up"]')
       ).toBeTruthy();
