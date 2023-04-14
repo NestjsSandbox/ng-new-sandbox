@@ -141,7 +141,7 @@ describe('SignUpComponent', () => {
       fixture.detectChanges();
 
       button = signUp.querySelector('button');
-    };
+    }; //end of setupForm()
 
     it('enables the Sign Up button when password and password-confirm have same value', async () => {
       await setupForm();
@@ -213,4 +213,99 @@ describe('SignUpComponent', () => {
       ).toBeFalsy();
     });
   }); //end of Interactions describe
+
+  describe('Validation', () => {
+    const genericTestValidation = (testParams: {
+      itTitle: string;
+      testid: string;
+      inputId: string;
+      inputValue: string;
+      errorText: string;
+    }) => {
+      it(testParams.itTitle, async () => {
+        const signUp = fixture.nativeElement as HTMLElement;
+
+        expect(signUp.querySelector(`div[data-testid="${testParams.testid}"]`))
+          .toBeNull;
+
+        const genericInput = signUp.querySelector(
+          `input[id="${testParams.inputId}"]`
+        ) as HTMLInputElement;
+
+        genericInput.value = testParams.inputValue;
+        genericInput.dispatchEvent(new Event('input'));
+        genericInput.dispatchEvent(new Event('blur'));
+
+        fixture.detectChanges();
+
+        const validationElement = signUp.querySelector(
+          `div[data-testid="${testParams.testid}"]`
+        );
+        expect(validationElement?.textContent).toContain(testParams.errorText);
+      });
+    }; // end of genericTestValidation()
+
+    genericTestValidation({
+      itTitle: 'displays username required error when username is empty',
+      testid: 'username-validation',
+      inputId: 'username',
+      inputValue: '',
+      errorText: 'Username is required',
+    });
+
+    genericTestValidation({
+      itTitle: 'displays length error when username is less than 4 chars',
+      testid: 'username-validation',
+      inputId: 'username',
+      inputValue: 'abc',
+      errorText: 'Username must be at least 4 characters long',
+    });
+    
+    // it('displays username required error when username is empty', async () => {
+    //   const signUp = fixture.nativeElement as HTMLElement;
+
+    //   expect(signUp.querySelector('div[data-testid="username-validation"]'))
+    //     .toBeNull;
+
+    //   const usernameInput = signUp.querySelector(
+    //     'input[id="username"]'
+    //   ) as HTMLInputElement;
+    //   //usernameInput.value = '';
+    //   usernameInput.dispatchEvent(new Event('focus'));
+    //   usernameInput.dispatchEvent(new Event('blur'));
+    //   fixture.detectChanges();
+
+    //   const validationElement = signUp.querySelector(
+    //     'div[data-testid="username-validation"]'
+    //   );
+    //   expect(validationElement?.textContent).toContain('Username is required');
+    // }); //end of it displays username required error when username is empty
+
+
+
+    // it('displays length error when username is less than 4 chars', async () => {
+    //   const signUp = fixture.nativeElement as HTMLElement;
+
+    //   expect(signUp.querySelector('div[data-testid="username-validation"]'))
+    //     .toBeNull;
+
+    //   const usernameInput = signUp.querySelector(
+    //     'input[id="username"]'
+    //   ) as HTMLInputElement;
+
+    //   usernameInput.value = 'abc';
+    //   usernameInput.dispatchEvent(new Event('input')); //The input event does 2 things: 1. It updates the value of the input field and 2. And it causes a focus event to be fired on the input field
+    //   usernameInput.dispatchEvent(new Event('blur'));
+
+    //   fixture.detectChanges();
+
+    //   const validationElement = signUp.querySelector(
+    //     'div[data-testid="username-validation"]'
+    //   );
+    //   expect(validationElement?.textContent).toContain(
+    //     'Username must be at least 4 characters long'
+    //   );
+    // }); //end of it displays username required error when username is empty
+
+  }); //end of Validation describe
 }); //end describe('SignUpComponent'

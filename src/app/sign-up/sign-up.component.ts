@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { UserService } from '../core/user.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sign-up',
@@ -13,14 +13,17 @@ export class SignUpComponent {
   private userService = inject(UserService);
 
   signupForm = new FormGroup({
-    username: new FormControl(''),
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(4),
+    ]),
     email: new FormControl(''),
     password: new FormControl(''),
     confirmPassword: new FormControl(''),
   });
   apiProgress = false;
   signUpSuccess = false;
-  
+
   onClickSignUp() {
     this.apiProgress = true;
 
@@ -32,18 +35,27 @@ export class SignUpComponent {
     };
     delete body.confirmPassword;
 
-    this.userService
-    .signup( body )
-      .subscribe(() => {
-        this.signUpSuccess = true;
-      });
-    }//end of onClickSignUp()
+    this.userService.signup(body).subscribe(() => {
+      this.signUpSuccess = true;
+    });
+  } //end of onClickSignUp()
 
-    isDisabled(): boolean {
-      return this.signupForm.get('password')?.value
-        ? this.signupForm.get('password')?.value !== this.signupForm.get('confirmPassword')?.value
-        : true;
-    }//end of isDisabled()
+  isDisabled(): boolean {
+    return this.signupForm.get('password')?.value
+      ? this.signupForm.get('password')?.value !==
+          this.signupForm.get('confirmPassword')?.value
+      : true;
+  } //end of isDisabled()
 
-  } //end of class
+  get usernameError(): string {
+    const field = this.signupForm.get('username');
+    if (field?.errors && field?.touched || field?.dirty) {
+      if (field?.errors?.['required']) {return 'Username is required'};
+      if (field?.errors?.['minlength']) {return 'Username must be at least 4 characters long'};
+    }
+      return '';
+  } //end of get usernameError()
 
+
+
+} //end of class
