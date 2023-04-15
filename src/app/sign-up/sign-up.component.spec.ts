@@ -125,6 +125,7 @@ describe('SignUpComponent', () => {
       ) as HTMLInputElement;
       email.value = 'test@email.com';
       email.dispatchEvent(new Event('input'));
+      email.dispatchEvent(new Event('blur'));
 
       const password = signUp.querySelector(
         'input[id="password"]'
@@ -299,8 +300,7 @@ describe('SignUpComponent', () => {
       testid: 'confirm-password-validation',
       inputId: 'confirmPassword',
       inputValue: 'wrongabc',
-      errorText:
-        'The confirm password value does not match the password',
+      errorText: 'The confirm password value does not match the password',
     });
     //======================================
     // I keep this version below for reference
@@ -348,5 +348,40 @@ describe('SignUpComponent', () => {
     //     'Username must be at least 4 characters long'
     //   );
     // }); //end of it displays username required error when username is empty
+
+    it('displays Email is in use if email is not unique', async () => {
+      let httpTestingController = TestBed.inject(HttpTestingController);
+
+      const signUp = fixture.nativeElement as HTMLElement;
+
+      expect(signUp.querySelector(`div[data-testid="email-validation"]`))
+        .toBeNull;
+
+      const input = signUp.querySelector(
+        `input[id="email"]`
+      ) as HTMLInputElement;
+      input.value = 'not@unique.email';
+
+      input.dispatchEvent(new Event('input'));
+      input.dispatchEvent(new Event('blur'));
+      const request = httpTestingController.expectOne(
+        ({ url, method, body }) => {
+          if (url === '/api/1.0/user/email' && method === 'POST') {
+            return body.email === 'not@unique.email';
+          }
+          return false;
+        }
+      ); //end of expectOne
+
+      request.flush({});
+      fixture.detectChanges();
+
+      const validationElement = signUp.querySelector(
+        `div[data-testid="email-validation"]`
+      );
+      expect(validationElement?.textContent).toContain(
+        'Email is already in use'
+      );
+    });
   }); //end of Validation describe
 }); //end describe('SignUpComponent'

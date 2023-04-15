@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { UserService } from '../core/user.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { passwordMatchValidator } from './password-match.validator';
+import { UniqueEmailValidator } from './unique-email.validator';
 
 @Component({
   selector: 'app-sign-up',
@@ -11,6 +12,7 @@ import { passwordMatchValidator } from './password-match.validator';
 export class SignUpComponent {
   //constructor(http: HttpClient) {}
   private userService = inject(UserService);
+  private uniqueEmailValidator = inject(UniqueEmailValidator);
 
   signupForm = new FormGroup(
     {
@@ -18,7 +20,13 @@ export class SignUpComponent {
         Validators.required,
         Validators.minLength(4),
       ]),
-      email: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+        asyncValidators: [
+          this.uniqueEmailValidator.validate.bind(this.uniqueEmailValidator),
+        ],
+        updateOn: 'blur',
+      }),
       password: new FormControl('', [
         Validators.required,
         Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/),
@@ -73,9 +81,10 @@ export class SignUpComponent {
     if ((field?.errors && field?.touched) || field?.dirty) {
       if (field?.errors?.['required']) {
         return 'Email is required';
-      }
-      if (field?.errors?.['email']) {
+      } else if (field?.errors?.['email']) {
         return 'Email format is invalid';
+      } else if (field?.errors?.['uniqueEmail']) {
+        return 'Email is already in use';
       }
     }
     return '';
