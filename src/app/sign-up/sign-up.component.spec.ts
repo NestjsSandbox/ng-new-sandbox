@@ -366,7 +366,10 @@ describe('SignUpComponent', () => {
       input.dispatchEvent(new Event('blur'));
       const request = httpTestingController.expectOne(
         ({ url, method, body }) => {
-          if (url === '/api/1.0/user/email' && method === 'POST') {
+          if (
+            url === 'http://localhost:8080/api/1.0/user/email' &&
+            method === 'POST'
+          ) {
             return body.email === 'not@unique.email';
           }
           return false;
