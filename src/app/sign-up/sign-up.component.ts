@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { UserService } from '../core/user.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { passwordMatchValidator } from './password-match.validator';
 
 @Component({
   selector: 'app-sign-up',
@@ -12,18 +12,23 @@ export class SignUpComponent {
   //constructor(http: HttpClient) {}
   private userService = inject(UserService);
 
-  signupForm = new FormGroup({
-    username: new FormControl('', [
-      Validators.required,
-      Validators.minLength(4),
-    ]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/),
-    ]),
-    confirmPassword: new FormControl(''),
-  });
+  signupForm = new FormGroup(
+    {
+      username: new FormControl('', [
+        Validators.required,
+        Validators.minLength(4),
+      ]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/),
+      ]),
+      confirmPassword: new FormControl(''),
+    },
+    {
+      validators: passwordMatchValidator,
+    }
+  );
   apiProgress = false;
   signUpSuccess = false;
 
@@ -88,4 +93,20 @@ export class SignUpComponent {
     }
     return '';
   } //end of get passwordError()
+
+  get confirmPasswordError(): string {
+    //const field = this.signupForm.get('confirmPassword');
+    if (
+      (this.signupForm?.errors && this.signupForm?.touched) ||
+      this.signupForm?.dirty
+    ) {
+      // if (field?.errors?.['required']) {
+      //   return 'Password is required';
+      // }
+      if (this.signupForm?.errors?.['passwordMatch']) {
+        return 'The confirm password value does not match the password';
+      }
+    }
+    return '';
+  } //end of get confirmPasswordError()
 } //end of class

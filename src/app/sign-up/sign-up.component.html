@@ -74,11 +74,19 @@
           <label for="confirmPassword">Confirm Password</label>
           <input
             class="form-control"
+            [class.is-invalid]="confirmPasswordError"
             name="confirmPassword"
             id="confirmPassword"
             type="password"
             formControlName="confirmPassword"
           />
+          <div
+            data-testid="confirm-password-validation"
+            class="invalid-feedback"
+            *ngIf="confirmPasswordError"
+          >
+            {{ confirmPasswordError }}
+          </div>
         </div>
 
         <!-- wrap the button with div and center-->

@@ -294,6 +294,14 @@ describe('SignUpComponent', () => {
         'Password must have at leaset : 1 Uppercase, 1 lowercase and 1 number',
     });
 
+    genericTestValidation({
+      itTitle: 'displays confirm-password mismatches password',
+      testid: 'confirm-password-validation',
+      inputId: 'confirmPassword',
+      inputValue: 'wrongabc',
+      errorText:
+        'The confirm password value does not match the password',
+    });
     //======================================
     // I keep this version below for reference
     //======================================
