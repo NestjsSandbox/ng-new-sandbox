@@ -260,7 +260,43 @@ describe('SignUpComponent', () => {
       inputValue: 'abc',
       errorText: 'Username must be at least 4 characters long',
     });
-    
+
+    genericTestValidation({
+      itTitle: 'displays email required error when email is empty',
+      testid: 'email-validation',
+      inputId: 'email',
+      inputValue: '',
+      errorText: 'Email is required',
+    });
+
+    genericTestValidation({
+      itTitle: 'dispaly invalid email format when email wrong format',
+      testid: 'email-validation',
+      inputId: 'email',
+      inputValue: 'wrong#email-format',
+      errorText: 'Email format is invalid',
+    });
+
+    genericTestValidation({
+      itTitle: 'displays password required error when password is empty',
+      testid: 'password-validation',
+      inputId: 'password',
+      inputValue: '',
+      errorText: 'Password is required',
+    });
+
+    genericTestValidation({
+      itTitle: 'displays password rules error when password is wrong',
+      testid: 'password-validation',
+      inputId: 'password',
+      inputValue: 'abc',
+      errorText:
+        'Password must have at leaset : 1 Uppercase, 1 lowercase and 1 number',
+    });
+
+    //======================================
+    // I keep this version below for reference
+    //======================================
     // it('displays username required error when username is empty', async () => {
     //   const signUp = fixture.nativeElement as HTMLElement;
 
@@ -280,8 +316,6 @@ describe('SignUpComponent', () => {
     //   );
     //   expect(validationElement?.textContent).toContain('Username is required');
     // }); //end of it displays username required error when username is empty
-
-
 
     // it('displays length error when username is less than 4 chars', async () => {
     //   const signUp = fixture.nativeElement as HTMLElement;
@@ -306,6 +340,5 @@ describe('SignUpComponent', () => {
     //     'Username must be at least 4 characters long'
     //   );
     // }); //end of it displays username required error when username is empty
-
   }); //end of Validation describe
 }); //end describe('SignUpComponent'
