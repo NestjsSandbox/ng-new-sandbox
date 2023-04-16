@@ -3,6 +3,7 @@ import { UserService } from '../core/user.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { passwordMatchValidator } from './password-match.validator';
 import { UniqueEmailValidator } from './unique-email.validator';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-sign-up',
@@ -51,12 +52,23 @@ export class SignUpComponent {
     };
     delete body.confirmPassword;
 
-    this.userService.signup(body).subscribe(() => {
-      this.signUpSuccess = true;
-    });
+    this.userService.signup(body).subscribe({
+      next: () => {
+        this.signUpSuccess = true;
+      },
+      error: (httpError: HttpErrorResponse) => {
+        const emailValidationErrorMessage = httpError.error.validationErrors.email;
+        this.signupForm.get('email')?.setErrors({ backendError: emailValidationErrorMessage});
+      }
+    }
+
+     );
   } //end of onClickSignUp()
 
   isDisabled(): boolean {
+
+
+    
     return this.signupForm.get('password')?.value
       ? this.signupForm.get('password')?.value !==
           this.signupForm.get('confirmPassword')?.value
@@ -85,6 +97,8 @@ export class SignUpComponent {
         return 'Email format is invalid';
       } else if (field?.errors?.['uniqueEmail']) {
         return 'Email is already in use';
+      } else if (field?.errors?.['backendError']) {
+        return field?.errors?.['backendError'];
       }
     }
     return '';

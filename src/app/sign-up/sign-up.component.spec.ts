@@ -8,7 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 
 describe('SignUpComponent', () => {
-  let component: SignUpComponent;
+  //let component: SignUpComponent;
   let fixture: ComponentFixture<SignUpComponent>;
 
   beforeEach(async () => {
@@ -20,7 +20,7 @@ describe('SignUpComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SignUpComponent);
-    component = fixture.componentInstance;
+    //component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
@@ -152,7 +152,9 @@ describe('SignUpComponent', () => {
     it('sends username, email & password to backend when calling API', async () => {
       await setupForm();
       button?.click();
-      const req = httpTestingController.expectOne('/api/1.0/users');
+      const req = httpTestingController.expectOne(
+        'http://localhost:8080/api/1.0/users'
+      );
       const reqBody = req.request.body;
 
       expect(reqBody).toEqual({
@@ -175,7 +177,7 @@ describe('SignUpComponent', () => {
       button?.click(); //This will accept the form and make the call
       fixture.detectChanges(); //This makes sure the UI is updated to reflect the change caused by the click
       button?.click(); //This will try to click the button again, but it should be disabled
-      httpTestingController.expectOne('/api/1.0/users'); //Now we make the call
+      httpTestingController.expectOne('http://localhost:8080/api/1.0/users'); //Now we make the call
       expect(button?.disabled).toBeTruthy();
     }); //end of it disables the Sign Up button when there is an ongoing api call
 
@@ -191,7 +193,9 @@ describe('SignUpComponent', () => {
       await setupForm();
       expect(signUp.querySelector('.alert-success')).toBeFalsy();
       button?.click();
-      const req = httpTestingController.expectOne('/api/1.0/users');
+      const req = httpTestingController.expectOne(
+        'http://localhost:8080/api/1.0/users'
+      );
       req.flush({}); // returnS a 200 OK response
       fixture.detectChanges();
       const message = signUp.querySelector('.alert-success');
@@ -206,13 +210,35 @@ describe('SignUpComponent', () => {
         signUp.querySelector('div[data-testid="form-sign-up"]')
       ).toBeTruthy();
       button?.click();
-      const req = httpTestingController.expectOne('/api/1.0/users');
+      const req = httpTestingController.expectOne(
+        'http://localhost:8080/api/1.0/users'
+      );
       req.flush({}); // returns a 200 OK response
       fixture.detectChanges();
       expect(
         signUp.querySelector('div[data-testid="form-sign-up"]')
       ).toBeFalsy();
     });
+
+    it('displays validation error coming from backend after submit failed', async () => {
+      await setupForm();
+      button?.click();
+      const req = httpTestingController.expectOne(
+        'http://localhost:8080/api/1.0/users'
+      );
+      req.flush(
+        { validationErrors: { email: 'Email is already in use' } },
+        { status: 400, statusText: 'Bad Request' }
+      );
+      fixture.detectChanges();
+
+      const validationElement = signUp.querySelector(
+        `div[data-testid="email-validation"]`
+      );
+      expect(validationElement?.textContent).toContain(
+        'Email is already in use'
+      );
+    }); //end of it displays error message after failed sign up
   }); //end of Interactions describe
 
   describe('Validation', () => {
