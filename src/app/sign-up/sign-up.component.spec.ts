@@ -270,6 +270,27 @@ describe('SignUpComponent', () => {
         'Email is already in use'
       );
     }); //end of it displays error message after failed sign up
+
+    it('hides spinner after submit backend validation fail',async() => {
+      // submit form
+      await setupForm();
+      button?.click();
+      // wait for http request
+      const req = httpTestingController.expectOne(
+        'http://localhost:8080/api/1.0/users'
+      );
+      // send http response with status code 400 and validation error message
+      req.flush(
+        { validationErrors: { email: 'Email is already in use' } },
+        { status: 400, statusText: 'Bad Request' }
+      );
+      fixture.detectChanges();
+      // after response is received, check if spinner is hidden
+      expect(signUp.querySelector('span[role="status"]')).toBeFalsy();
+
+    })//end of it hides spinner after submit backend validation fail
+
+    ///=============END OF VALIDATION TESTS==================
   }); //end of Interactions describe
 
   describe('Validation', () => {

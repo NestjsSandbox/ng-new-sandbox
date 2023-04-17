@@ -99,31 +99,43 @@ export class SignUpComponent {
     return '';
   } //end of get confirmPasswordError()
 
+  // This function is called when the user clicks the signup button
   onClickSignUp() {
     this.apiProgress = true;
 
+    // Create an object with the values from the signup form
     const body = this.signupForm.value as {
       username: string | null | undefined;
       password: string | null | undefined;
       email: string | null | undefined;
       confirmPassword: string | null | undefined;
     };
+
+    // Remove the "confirmPassword" property from the object
     delete body.confirmPassword;
 
+    // Call the signup function in the UserService to send the signup request
     this.userService.signup(body).subscribe({
+      // If the signup request was successful, set the signupSuccess property to true
       next: () => {
         this.signUpSuccess = true;
       },
+
+      // If the signup request failed, display the error message in the email field
       error: (httpError: HttpErrorResponse) => {
         const emailValidationErrorMessage =
           httpError.error.validationErrors.email;
+
         this.signupForm
           .get('email')
           ?.setErrors({ backendError: emailValidationErrorMessage });
+
+          this.apiProgress = false;
       },
     });
   } //end of onClickSignUp()
 
+  // This function returns true if any of the fields are invalid
   isDisabled(): boolean {
     const formFilled =
       this.signupForm.get('username')?.value &&
@@ -139,5 +151,6 @@ export class SignUpComponent {
 
     return !formFilled || validationError ? true : false;
 
-  } //end of isDisabled()
+  }
+ //end of isDisabled()
 } //end of class
