@@ -41,40 +41,6 @@ export class SignUpComponent {
   apiProgress = false;
   signUpSuccess = false;
 
-  onClickSignUp() {
-    this.apiProgress = true;
-
-    const body = this.signupForm.value as {
-      username: string | null | undefined;
-      password: string | null | undefined;
-      email: string | null | undefined;
-      confirmPassword: string | null | undefined;
-    };
-    delete body.confirmPassword;
-
-    this.userService.signup(body).subscribe({
-      next: () => {
-        this.signUpSuccess = true;
-      },
-      error: (httpError: HttpErrorResponse) => {
-        const emailValidationErrorMessage = httpError.error.validationErrors.email;
-        this.signupForm.get('email')?.setErrors({ backendError: emailValidationErrorMessage});
-      }
-    }
-
-     );
-  } //end of onClickSignUp()
-
-  isDisabled(): boolean {
-
-
-    
-    return this.signupForm.get('password')?.value
-      ? this.signupForm.get('password')?.value !==
-          this.signupForm.get('confirmPassword')?.value
-      : true;
-  } //end of isDisabled()
-
   get usernameError(): string {
     const field = this.signupForm.get('username');
     if ((field?.errors && field?.touched) || field?.dirty) {
@@ -132,4 +98,46 @@ export class SignUpComponent {
     }
     return '';
   } //end of get confirmPasswordError()
+
+  onClickSignUp() {
+    this.apiProgress = true;
+
+    const body = this.signupForm.value as {
+      username: string | null | undefined;
+      password: string | null | undefined;
+      email: string | null | undefined;
+      confirmPassword: string | null | undefined;
+    };
+    delete body.confirmPassword;
+
+    this.userService.signup(body).subscribe({
+      next: () => {
+        this.signUpSuccess = true;
+      },
+      error: (httpError: HttpErrorResponse) => {
+        const emailValidationErrorMessage =
+          httpError.error.validationErrors.email;
+        this.signupForm
+          .get('email')
+          ?.setErrors({ backendError: emailValidationErrorMessage });
+      },
+    });
+  } //end of onClickSignUp()
+
+  isDisabled(): boolean {
+    const formFilled =
+      this.signupForm.get('username')?.value &&
+      this.signupForm.get('email')?.value &&
+      this.signupForm.get('password')?.value &&
+      this.signupForm.get('confirmPassword')?.value;
+
+    const validationError =
+      this.usernameError ||
+      this.emailError ||
+      this.passwordError ||
+      this.confirmPasswordError;
+
+    return !formFilled || validationError ? true : false;
+
+  } //end of isDisabled()
 } //end of class

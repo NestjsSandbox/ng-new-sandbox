@@ -24,5 +24,6 @@ export class UserService {
     return this.httpClient.post('http://localhost:8080/api/1.0/user/email', {
       email: value,
     });
-  }
+  }//end isEmailTaken
+
 } //end class

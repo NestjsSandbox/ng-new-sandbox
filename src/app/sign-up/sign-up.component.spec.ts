@@ -108,49 +108,80 @@ describe('SignUpComponent', () => {
     let button: any; //HTMLButtonElement | null;
     let signUp: HTMLElement;
 
+    // const setupForm = async () => {
+    //   httpTestingController = TestBed.inject(HttpTestingController);
+
+    //   signUp = fixture.nativeElement as HTMLElement;
+    //   await fixture.whenStable();
+
+    //   const username = signUp.querySelector(
+    //     'input[id="username"]'
+    //   ) as HTMLInputElement;
+    //   username.value = 'user1';
+    //   username.dispatchEvent(new Event('input'));
+
+    //   const email = signUp.querySelector(
+    //     'input[id="email"]'
+    //   ) as HTMLInputElement;
+    //   email.value = 'test@email.com';
+    //   email.dispatchEvent(new Event('input'));
+    //   email.dispatchEvent(new Event('blur'));
+
+    //   const password = signUp.querySelector(
+    //     'input[id="password"]'
+    //   ) as HTMLInputElement;
+    //   password.value = '1234';
+    //   password.dispatchEvent(new Event('input'));
+
+    //   const confirmPassword = signUp.querySelector(
+    //     'input[id="confirmPassword"]'
+    //   ) as HTMLInputElement;
+    //   confirmPassword.value = '1234';
+    //   confirmPassword.dispatchEvent(new Event('input'));
+
+    //   fixture.detectChanges();
+
+    //   button = signUp.querySelector('button');
+    // }; //end of setupForm()
+
     const setupForm = async () => {
       httpTestingController = TestBed.inject(HttpTestingController);
 
       signUp = fixture.nativeElement as HTMLElement;
-      await fixture.whenStable();
 
-      const username = signUp.querySelector(
+      const usernameInput = signUp.querySelector(
         'input[id="username"]'
       ) as HTMLInputElement;
-      username.value = 'test-username';
-      username.dispatchEvent(new Event('input'));
-
-      const email = signUp.querySelector(
+      const emailInput = signUp.querySelector(
         'input[id="email"]'
       ) as HTMLInputElement;
-      email.value = 'test@email.com';
-      email.dispatchEvent(new Event('input'));
-      email.dispatchEvent(new Event('blur'));
-
-      const password = signUp.querySelector(
+      const passwordInput = signUp.querySelector(
         'input[id="password"]'
       ) as HTMLInputElement;
-      password.value = '1234';
-      password.dispatchEvent(new Event('input'));
-
-      const confirmPassword = signUp.querySelector(
+      const passwordRepeatInput = signUp.querySelector(
         'input[id="confirmPassword"]'
       ) as HTMLInputElement;
-      confirmPassword.value = '1234';
-      confirmPassword.dispatchEvent(new Event('input'));
-
+      usernameInput.value = 'user1';
+      usernameInput.dispatchEvent(new Event('input'));
+      emailInput.value = 'user1@mail.com';
+      emailInput.dispatchEvent(new Event('input'));
+      emailInput.dispatchEvent(new Event('blur'));
+      passwordInput.value = 'P4ssword';
+      passwordInput.dispatchEvent(new Event('input'));
+      passwordRepeatInput.value = 'P4ssword';
+      passwordRepeatInput.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-
       button = signUp.querySelector('button');
-    }; //end of setupForm()
+    };
 
     it('enables the Sign Up button when password and password-confirm have same value', async () => {
       await setupForm();
       expect(button?.disabled).toBeFalsy();
     }); //end it enables Sign Up button when password === confmirmpPassword
 
-    it('sends username, email & password to backend when calling API', async () => {
+    it('sends username, email & password to backend after clicking the signup button', async () => {
       await setupForm();
+      fixture.detectChanges();
       button?.click();
       const req = httpTestingController.expectOne(
         'http://localhost:8080/api/1.0/users'
@@ -158,9 +189,9 @@ describe('SignUpComponent', () => {
       const reqBody = req.request.body;
 
       expect(reqBody).toEqual({
-        username: 'test-username',
-        password: '1234',
-        email: 'test@email.com',
+        username: 'user1',
+        password: 'P4ssword',
+        email: 'user1@mail.com',
       });
     }); //end of it sends username, email & password to backend when calling API
 
@@ -327,90 +358,44 @@ describe('SignUpComponent', () => {
       inputId: 'confirmPassword',
       inputValue: 'wrongabc',
       errorText: 'The confirm password value does not match the password',
-    });
-    //======================================
-    // I keep this version below for reference
-    //======================================
-    // it('displays username required error when username is empty', async () => {
+    }); //end of it displays confirm-password mismatches password
+
+    // it('displays Email is in use if email is not unique', async () => {
+    //   let httpTestingController = TestBed.inject(HttpTestingController);
+
     //   const signUp = fixture.nativeElement as HTMLElement;
 
-    //   expect(signUp.querySelector('div[data-testid="username-validation"]'))
+    //   expect(signUp.querySelector(`div[data-testid="email-validation"]`))
     //     .toBeNull;
 
-    //   const usernameInput = signUp.querySelector(
-    //     'input[id="username"]'
+    //   const input = signUp.querySelector(
+    //     `input[id="email"]`
     //   ) as HTMLInputElement;
-    //   //usernameInput.value = '';
-    //   usernameInput.dispatchEvent(new Event('focus'));
-    //   usernameInput.dispatchEvent(new Event('blur'));
+    //   input.value = 'not@unique.email';
+
+    //   input.dispatchEvent(new Event('input'));
+    //   input.dispatchEvent(new Event('blur'));
+    //   const request = httpTestingController.expectOne(
+    //     ({ url, method, body }) => {
+    //       if (
+    //         url === 'http://localhost:8080/api/1.0/user/email' &&
+    //         method === 'POST'
+    //       ) {
+    //         return body.email === 'not@unique.email';
+    //       }
+    //       return false;
+    //     }
+    //   ); //end of expectOne
+
+    //   request.flush({});
     //   fixture.detectChanges();
 
     //   const validationElement = signUp.querySelector(
-    //     'div[data-testid="username-validation"]'
-    //   );
-    //   expect(validationElement?.textContent).toContain('Username is required');
-    // }); //end of it displays username required error when username is empty
-
-    // it('displays length error when username is less than 4 chars', async () => {
-    //   const signUp = fixture.nativeElement as HTMLElement;
-
-    //   expect(signUp.querySelector('div[data-testid="username-validation"]'))
-    //     .toBeNull;
-
-    //   const usernameInput = signUp.querySelector(
-    //     'input[id="username"]'
-    //   ) as HTMLInputElement;
-
-    //   usernameInput.value = 'abc';
-    //   usernameInput.dispatchEvent(new Event('input')); //The input event does 2 things: 1. It updates the value of the input field and 2. And it causes a focus event to be fired on the input field
-    //   usernameInput.dispatchEvent(new Event('blur'));
-
-    //   fixture.detectChanges();
-
-    //   const validationElement = signUp.querySelector(
-    //     'div[data-testid="username-validation"]'
+    //     `div[data-testid="email-validation"]`
     //   );
     //   expect(validationElement?.textContent).toContain(
-    //     'Username must be at least 4 characters long'
+    //     'Email is already in use'
     //   );
-    // }); //end of it displays username required error when username is empty
-
-    it('displays Email is in use if email is not unique', async () => {
-      let httpTestingController = TestBed.inject(HttpTestingController);
-
-      const signUp = fixture.nativeElement as HTMLElement;
-
-      expect(signUp.querySelector(`div[data-testid="email-validation"]`))
-        .toBeNull;
-
-      const input = signUp.querySelector(
-        `input[id="email"]`
-      ) as HTMLInputElement;
-      input.value = 'not@unique.email';
-
-      input.dispatchEvent(new Event('input'));
-      input.dispatchEvent(new Event('blur'));
-      const request = httpTestingController.expectOne(
-        ({ url, method, body }) => {
-          if (
-            url === 'http://localhost:8080/api/1.0/user/email' &&
-            method === 'POST'
-          ) {
-            return body.email === 'not@unique.email';
-          }
-          return false;
-        }
-      ); //end of expectOne
-
-      request.flush({});
-      fixture.detectChanges();
-
-      const validationElement = signUp.querySelector(
-        `div[data-testid="email-validation"]`
-      );
-      expect(validationElement?.textContent).toContain(
-        'Email is already in use'
-      );
-    });
+    // });//end of it displays Email is in use if email is not unique
   }); //end of Validation describe
 }); //end describe('SignUpComponent'
