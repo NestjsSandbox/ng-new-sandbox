@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { VideoModule } from 'src/video/video.module';
+import { VideoModule } from 'src/video-ytb/video-ytb.module';
 import { AppComponent } from './app.component';
 
 @NgModule({

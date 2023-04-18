@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  templateUrl: './video.component.html',
+  templateUrl: './video-ytb.component.html',
   selector: 'app-video',
 })
 export class VideoComponent implements OnInit {
