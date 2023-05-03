@@ -7,3 +7,9 @@ The prefrences are given by user by clicking on radio button options.
 
 See the drawio file with images & diagrams: 
   D:\Creation\Angular\Tutorials\Refresh-March-2023\ng-practice\diagrams\pwd-generator.drawio
+
+
+Commit tests:
+  20230503-1433
+  20230503-1435
+  
